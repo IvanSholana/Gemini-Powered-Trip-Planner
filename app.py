@@ -8,7 +8,7 @@ import spacy
 # Set up the API key and NLP model
 api_key = os.getenv("AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0") or "AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0"
 genai.configure(api_key=api_key)  # Replace with your actual API key
-nlp = spacy.load("en_core_web_sm")
+# nlp = spacy.load("en_core_web_sm")
 
 # Initialize session states
 if 'counter' not in st.session_state:
