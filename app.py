@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 load_dotenv()
 import google.generativeai as genai
 import os
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+api_key = os.getenv("AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0") or "AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0"
+genai.configure(api_key=api_key)  # Pastikan untuk mengganti "your-api-key-here" dengan API key Anda
 import json
 from IPython.display import display, Markdown
 from gemini import Gemini
@@ -17,32 +18,32 @@ from streamlit_folium import folium_static
 nlp = spacy.load("en_core_web_sm")
 
 # Function to extract locations
-def extract_locations(text):
-    if type(text) is dict:
-        a = ""
-        for t in text.values():    
-            a += f"{t}"
-        text = a
+# def extract_locations(text):
+#     if type(text) is dict:
+#         a = ""
+#         for t in text.values():    
+#             a += f"{t}"
+#         text = a
         
-    locations = {}
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "GPE":  # Check if the entity is a geopolitical entity (i.e., a location)
-            locations[ent.text] = geocode_location(ent.text)
-    return {k: v for k, v in locations.items() if v is not None}
+#     locations = {}
+#     doc = nlp(text)
+#     for ent in doc.ents:
+#         if ent.label_ == "GPE":  # Check if the entity is a geopolitical entity (i.e., a location)
+#             locations[ent.text] = geocode_location(ent.text)
+#     return {k: v for k, v in locations.items() if v is not None}
     
         
 # Function to geocode location
-def geocode_location(location):
-    api_key = os.environ.get("GOOGLEMAPS_API_KEY")  # Replace with your API key
-    map_url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {'address': location, 'key': api_key}
-    response = requests.get(map_url, params=params).json()
-    if response['status'] == 'OK':
-        latlng = response['results'][0]['geometry']['location']
-        return latlng['lat'], latlng['lng']
-    else:
-        return None
+# def geocode_location(location):
+#     api_key = os.environ.get("GOOGLEMAPS_API_KEY")  # Replace with your API key
+#     map_url = "https://maps.googleapis.com/maps/api/geocode/json"
+#     params = {'address': location, 'key': api_key}
+#     response = requests.get(map_url, params=params).json()
+#     if response['status'] == 'OK':
+#         latlng = response['results'][0]['geometry']['location']
+#         return latlng['lat'], latlng['lng']
+#     else:
+#         return None
 
 if 'counter' not in st.session_state:
     st.session_state['counter'] = 0
@@ -75,10 +76,9 @@ def main():
         session_state["generate_button_clicked"] = True
                 
     with col2:
-        st.title("Gemini Response")
         response = {}
         if st.session_state["generate_button_clicked"]:
-            with open(r'C:\Users\Cihan\Desktop\streamlit\gemini_answer.json', 'r', encoding="utf-8") as file:
+            with open(r'./gemini_answer.json', 'r', encoding="utf-8") as file:
                 response = json.load(file)
                 st.session_state["response"] = response
         current_day = f"Day {st.session_state['counter'] + 1}"
@@ -110,23 +110,23 @@ def main():
                 current_day_infos.empty()
                 current_day_infos.write("No information available for this day.")
 
-    with col3:
-        locations = extract_locations(st.session_state["response"])
+    # with col3:
+        # locations = extract_locations(st.session_state["response"])
   
-        #print(locations)
-        coordinates = [location for location in locations.values() if location is not None]
-        map_center = [sum(coord) / len(coord) for coord in zip(*coordinates)] if coordinates else None
-        if map_center:
-            mymap = folium.Map(location=map_center, zoom_start=3)
+        # #print(locations)
+        # coordinates = [location for location in locations.values() if location is not None]
+        # map_center = [sum(coord) / len(coord) for coord in zip(*coordinates)] if coordinates else None
+        # if map_center:
+        #     mymap = folium.Map(location=map_center, zoom_start=3)
             
-            # Add markers for each location
-            for place_name, loc in locations.items():
-                if loc is not None:
-                    folium.Marker(loc, popup=place_name).add_to(mymap)
-            #st.title("\t\tMap Viewer")
-            st.markdown("<div style='text-align: right; font-size: 30px; font-weight: bold;'>Map Viewer</div>", unsafe_allow_html=True)
+        #     # Add markers for each location
+        #     for place_name, loc in locations.items():
+        #         if loc is not None:
+        #             folium.Marker(loc, popup=place_name).add_to(mymap)
+        #     #st.title("\t\tMap Viewer")
+        #     st.markdown("<div style='text-align: right; font-size: 30px; font-weight: bold;'>Map Viewer</div>", unsafe_allow_html=True)
 
-            folium_static(mymap, width=600, height=400)
+        #     folium_static(mymap, width=600, height=400)
 
 if __name__ == '__main__':
     main()

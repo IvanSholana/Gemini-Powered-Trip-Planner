@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 load_dotenv()
 import google.generativeai as genai
 import os
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+api_key = os.getenv("AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0") or "AIzaSyAwnWCj9gkgGN9v397HROgWlLzU_7M6ms0"
+genai.configure(api_key=api_key)  # Pastikan untuk mengganti "your-api-key-here" dengan API key Anda
 import json
 from IPython.display import display, Markdown
 import textwrap
