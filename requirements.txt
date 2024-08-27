@@ -1,9 +1,4 @@
-folium==0.17.0
-ipython==8.12.3
-protobuf==5.27.3
-python-dotenv==1.0.1
-requests==2.32.3
-spacy==3.7.6
-streamlit==1.37.1
-streamlit_folium==0.22.0
-gemini==0.30.2cl
+streamlit
+google-generativeai
+gemini
+spacy
